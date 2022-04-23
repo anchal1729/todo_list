@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>TODO LIST</title>
+  <style>
+    body {
+      background-color: lightgrey;
+    }
+
+    .one {
+      height: 230px;
+      width: 970px;
+      margin: 0px auto;
+      background-color:rgb(184, 57, 78);
+
+
+    }
+
+    .two {
+      height: 230px;
+      width: 970px;
+      margin: 0px auto;
+      background-color: rgb(184, 57, 78);
+    }
+
+
+    .container {
+      padding-top: 30px;
+      margin-top: 20px;
+      padding-left: 40px;
+      background-color: rgb(184, 57, 78);
+    }
+
+    .containertwo {
+      padding-top: 12px;
+      margin-top: 12px;
+      padding-left: 12px;
+    }
+
+    .btn {
+      position: relative;
+      left: 600px;
+      top: -60px;
+
+      margin-left: 0px;
+      font-family: sans-serif;
+      font-size: 15px;
+      border-radius: 4px;
+      color: black;
+    }
+
+    .incomplete {
+      background-color: pink;
+      height: 230px;
+      width: 970px;
+      margin: 0px auto;
+      padding-top: 12px;
+      margin-top: 12px;
+      padding-left: 12px;
+    }
+
+    .complete {
+
+      background-color: darkgray;
+      height: 230px;
+      width: 970px;
+      margin: 0px auto;
+      padding-top: 12px;
+      margin-top: 12px;
+      padding-left: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1 style="color:darkslateblue;text-align:center;">TO DO LIST</h1>
+  <div class="one">
+    <div class="container">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" value="">
+      <span style="color:red;" id="titleError"></span>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <label for="date">Date:</label>
+      <input type="date" id="date"><br><br>
+      <span style="color: red;" id="dateError"></span>
+      <label for="description">Description:</label>
+      <textarea id="description"></textarea>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <span style="color:red;" id="descriptionError"></span>
+      <label for="priority">Priority:</label>
+      <select id="priority">
+        <option>..select..</option>
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
+      <span style="color:red;" id="priorityError"></span>
+      <input type="button" value="ADD" onclick="ch()">
+    </div>
+  </div>
+
+
+  <div id="record"></div>
+
+  <script>
+    //alert("hey");
+    var todoArray = [];
+    function ch() {
+      // alert("hello");
+      var isError = false;
+      var title = document.getElementById("title").value;
+      var date = document.getElementById("date").value;
+      var description = document.getElementById("description").value;
+      var priority = document.getElementById("priority").value;
+
+      if (priority == "") {
+
+        document.getElementById("priorityError").innerHTML = "";
+        document.getElementById("priority").style.border = "2px solid red";
+        isError = true;
+      }
+      else {
+
+        document.getElementById("priorityError").innerHTML = "";
+        document.getElementById("priority").style.border = "";
+        isError = false;
+      }
+
+      if (title == "") {
+        document.getElementById("titleError").innerHTML = "";
+        document.getElementById("title").style.border = "2px solid red";
+        isError = true;
+      }
+      else {
+
+        document.getElementById("titleError").innerHTML = "";
+        document.getElementById("title").style.border = "";
+        isError = false;
+
+      }
+      if (date == "") {
+        document.getElementById("dateError").innerHTML = "";
+        document.getElementById("date").style.border = "2px solid red";
+        isError = true;
+      }
+      else {
+
+        document.getElementById("dateError").innerHTML = "";
+        document.getElementById("date").style.border = "";
+        isError = false;
+
+      }
+      if (description == "") {
+        document.getElementById("descriptionError").innerHTML = "";
+        document.getElementById("description").style.border = "2px solid red";
+        isError = true;
+      }
+      else {
+
+        document.getElementById("descriptionError").innerHTML = "";
+        document.getElementById("description").style.border = "";
+        isError = false;
+
+      }
+      if (isError == false) {
+        //object for array
+        var contact = { "Title": title, "Date": date, "Description": description, "Priority": priority };
+        todoArray.push(contact);
+        document.getElementById("record").innerHTML = createHTML();
+      }
+    }
+    function deleteButton(index) {
+      //alert("heyy");
+      let contact = todoArray[index];
+      console.log("delete", contact);
+      document.getElementById("record").innerHTML = todoArray.splice(index, 1);
+      document.getElementById("record").innerHTML = createHTML();
+    }
+    function editButton(index) {
+      document.getElementById("title").value = todoArray[index].Title;
+      document.getElementById("description").value = todoArray[index].Description;
+      document.getElementById("date").value = todoArray[index].Date;
+      document.getElementById("priority").value = todoArray[index].Priority;
+
+    }
+    function changeStatus(index) {
+      let contact = todoArray[index];
+      if (contact.status == "incomplete") {
+        contact.status = "complete"
+        document.getElementById("taskContainer" + index).className = "complete"
+        document.getElementById("complete" + index).innerHTML = "Mark In-Complete"
+      }
+      else {
+        contact.status = "incomplete";
+        document.getElementById("taskContainer" + index).className = "incomplete"
+        document.getElementById("complete" + index).innerHTML = "Mark Complete"
+      }
+      todoArray[index] = contact;
+      //document.getElementById("record").innerHTML = createHTML();
+    }
+
+
+
+    function createHTML() {
+      let newHTML = "";
+      for (i = 0; i < todoArray.length; i++) {
+        console.log("todoArray[i]");
+        newHTML += ` <div class="two ${todoArray[i].status == "incomplete" ? "incomplete" : "complete"}" id = "taskContainer${i}">
+        <div class="containertwo">
+          <div>
+            <h2>${todoArray[i].Title}</h2><br>
+            <button class="btn" onclick="editButton(${i})">Edit</button>
+            <button class="btn" onclick="deleteButton(${i})" >Delete </button>
+            ${todoArray[i].status == "incomplete" ? '<button id="complete ' +i+'" class="btn" onclick="changeStatus(' + i + ')">MarkComplete</button>' :
+            '<button class="btn" id = "complete' + i + '" onclick="changeStatus(' + i + ')">Mark In Complete</button>'}
+            
+          </div>
+          <div>
+            <p>${todoArray[i].Description}</p>
+          </div>
+          <div>
+            <spna>${todoArray[i].Date}</span>
+            <span style="margin-left:600px;">${todoArray[i].Priority}</span>
+          </div>
+        </div>
+      </div>
+          `;
+
+      }
+      return newHTML;
+    }
+
+  </script>
+
+
+
+</body>
+
+</html>
